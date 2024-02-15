@@ -6,21 +6,27 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { LocalStrategy } from './local.strategy';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from '../../core/strategy/jwt.strategy';
+import { userProviders } from './auth.providers';
 
 @Module({
   imports: [
-    PassportModule,
-    UsersModule,
-    JwtModule.register({
-      secret: process.env.JWTKEY,
-      signOptions: { expiresIn: process.env.TOKEN_EXPIRATION },
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        secret: process.env.JWTKEY,
+        signOptions: { expiresIn: process.env.TOKEN_EXPIRATION },
+      })
     }),
+    PassportModule.register({
+      defaultStrategy: 'jwt'
+    }),
+    UsersModule,
   ],
   providers: [
     AuthService,
-    LocalStrategy,
     JwtStrategy,
+    JwtModule,
+    ...userProviders
   ],
   controllers: [AuthController],
 })

@@ -6,13 +6,19 @@ export class ValidateInputPipe extends ValidationPipe {
         try {
             return await super.transform(value, metadata);
         } catch (e) {
+            // Check if the error is an instance of BadRequestException
             if (e instanceof BadRequestException) {
-                throw new UnprocessableEntityException(this.handleError(e.message.message));
+                // If the error is a BadRequestException, throw an UnprocessableEntityException with the appropriate error message
+                throw new UnprocessableEntityException(this.handleError(e.getResponse()));
             }
+
+            // If it's not a BadRequestException, re-throw the error
+            throw e;
         }
     }
 
     private handleError(errors) {
-        return errors.map(error => error.constraints);
+        // Parse the validation errors and return them
+        return errors.message;
     }
 }
