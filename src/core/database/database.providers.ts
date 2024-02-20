@@ -6,6 +6,7 @@ import { Post } from '../../modules/posts/post.entity';
 import { RefreshToken } from '../../modules/auth/refresh-token.entity';
 import { Author } from '../../modules/authors/entities/author.entity';
 import { Category } from '../../modules/category/entities/category.entity';
+import { Publisher } from '../../modules/publisher/entities/publisher.entity';
 
 export const databaseProviders = [
   {
@@ -26,7 +27,7 @@ export const databaseProviders = [
           config = dbConfig.development;
       }
       const sequelize = new Sequelize(config);
-      sequelize.addModels([User, Post, RefreshToken, Author, Category]);
+      sequelize.addModels([User, Post, RefreshToken, Author, Category, Publisher]);
       await sequelize.sync();
       return sequelize;
     },

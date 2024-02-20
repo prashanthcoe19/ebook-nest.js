@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { AuthorsModule } from './modules/authors/authors.module';
 import { CategoryModule } from './modules/category/category.module';
+import { PublisherModule } from './modules/publisher/publisher.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CategoryModule } from './modules/category/category.module';
     PostsModule,
     AuthorsModule,
     CategoryModule,
+    PublisherModule,
   ],
   controllers: [AppController],
   providers: [AppService],
