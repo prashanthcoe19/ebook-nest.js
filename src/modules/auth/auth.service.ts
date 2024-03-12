@@ -14,6 +14,8 @@ import { RefreshToken } from './refresh-token.entity';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { ExceptionTitleList } from '../../core/constants/expection-title-list';
 import moment from 'moment';
+import { MailJobInterface } from '../mail/interface/mail-job.interface';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +24,7 @@ export class AuthService {
     private userRepository: typeof User,
     private readonly userService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async validateUser(username: string, pass: string) {
@@ -36,6 +39,7 @@ export class AuthService {
   }
 
   public async login(user: AuthDto): Promise<string[]> {
+    console.log(user);
     let existingUser = await this.validateUser(user.email, user.password);
     if (!existingUser) {
       throw new ForbiddenException('Invalid Credentials', 422);
@@ -77,12 +81,30 @@ export class AuthService {
     return plainToClass(UserSerializer, instanceToPlain(user, {}));
   }
 
+  async sendMailToUser(
+    user: UserSerializer,
+    subject: string,
+    url?: string,
+    linkLabel?: string,
+  ) {
+    const mailData: MailJobInterface = {
+      to: user.email,
+      subject,
+      context: {
+        email: user.email,
+        link: `<a href="localhost:3000/test"</a>`,
+        subject,
+      },
+    };
+    await this.mailService.sendMail(mailData, 'system-mail');
+  }
+
   async generateToken(user: object): Promise<string> {
     return await this.jwtService.signAsync(user);
   }
 
   buildResponsePaylod(access_token: string, refresh_token?: string): string[] {
-    const isSameSite = true; // Set your SameSite preference here
+    const isSameSite = false; // Set your SameSite preference here
     let tokenCookies = [
       `Authentication=${access_token}; HttpOnly; Path=/; ${
         !isSameSite ? 'SameSite=None; Secure;' : ''

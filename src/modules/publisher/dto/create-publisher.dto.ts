@@ -4,6 +4,9 @@ export class CreatePublisherDto {
   readonly name: string;
 
   @IsNotEmpty()
+  readonly slug: string;
+
+  @IsNotEmpty()
   readonly year_founded: string;
 
   @IsNotEmpty()
@@ -15,5 +18,5 @@ export class CreatePublisherDto {
 
   @IsOptional()
   @IsUrl()
-  readonly website: string
+  readonly website: string;
 }

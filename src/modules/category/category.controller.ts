@@ -11,13 +11,16 @@ import { CategoriesService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
+import { CategorySerializer } from './category.serializer';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoriesService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
+  create(
+    @Body() createCategoryDto: CreateCategoryDto,
+  ): Promise<CategorySerializer> {
     return this.categoryService.create(createCategoryDto);
   }
 
@@ -35,7 +38,7 @@ export class CategoryController {
   update(
     @Param('id') id: string,
     @Body() createCategoryDto: CreateCategoryDto,
-  ): Promise<Category> {
+  ): Promise<CategorySerializer> {
     return this.categoryService.update(id, createCategoryDto);
   }
 

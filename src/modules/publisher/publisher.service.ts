@@ -2,6 +2,8 @@ import { Injectable, Inject } from '@nestjs/common';
 import { CreatePublisherDto } from './dto/create-publisher.dto';
 import { Publisher } from './entities/publisher.entity';
 import { CustomHttpException } from '../../core/exception/custom-excpetion';
+import { PublisherSerializer } from './publisher.serializer';
+import { instanceToPlain, plainToClass } from 'class-transformer';
 
 @Injectable()
 export class PublisherService {
@@ -10,30 +12,42 @@ export class PublisherService {
     private publisherRepository: typeof Publisher,
   ) {}
 
-  async create(createPublisherDto: CreatePublisherDto): Promise<Publisher> {
-    return this.publisherRepository.create(createPublisherDto);
+  async create(
+    createPublisherDto: CreatePublisherDto,
+  ): Promise<PublisherSerializer> {
+    const publisher = await this.publisherRepository.create(createPublisherDto);
+    return plainToClass(
+      PublisherSerializer,
+      instanceToPlain(publisher['dataValues'], {}),
+    );
   }
 
   async findAll(): Promise<Publisher[]> {
-    return this.publisherRepository.findAll();
+    return this.publisherRepository.findAll({
+      attributes: { exclude: ['id'] },
+    });
   }
 
-  async findOne(id: string): Promise<Publisher | null> {
+  async findOne(id: string): Promise<PublisherSerializer | null> {
     const publisher = await this.publisherRepository.findOne({
       where: { _id: id },
     });
     if (!publisher) {
       throw new CustomHttpException('Publisher Not Found', 404);
     }
-    return publisher;
+    return plainToClass(
+      PublisherSerializer,
+      instanceToPlain(publisher['dataValues'], {}),
+    );
   }
 
   async update(
     id: string,
     createPublisherDto: CreatePublisherDto,
-  ): Promise<Publisher | null> {
+  ): Promise<PublisherSerializer | null> {
     await this.findOne(id);
-    const { name, email, website, contact, year_founded } = createPublisherDto;
+    const { name, email, website, contact, year_founded, slug } =
+      createPublisherDto;
 
     const updateData = {
       name,
@@ -41,6 +55,7 @@ export class PublisherService {
       website: website ?? null,
       contact: contact ?? null,
       year_founded,
+      slug,
     };
 
     const updatedData = await this.publisherRepository.update(updateData, {
@@ -48,7 +63,10 @@ export class PublisherService {
       returning: true,
     });
 
-    return updatedData?.[1]?.[0];
+    return plainToClass(
+      PublisherSerializer,
+      instanceToPlain(updatedData?.[1]?.[0]['dataValues'], {}),
+    );
   }
 
   async remove(id: string) {

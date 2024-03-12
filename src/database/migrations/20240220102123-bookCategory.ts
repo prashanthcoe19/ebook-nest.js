@@ -3,7 +3,7 @@ import { QueryInterface, DataTypes } from 'sequelize';
 
 module.exports = {
   async up(queryInterface: QueryInterface) {
-    await queryInterface.createTable('Category', {
+    await queryInterface.createTable('BookCategory', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -15,13 +15,21 @@ module.exports = {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
       },
-      name: {
+      book_id: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Book',
+          key: 'id',
+        },
       },
-      slug: {
+      category_id: {
         allowNull: false,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'Category',
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,
@@ -35,6 +43,6 @@ module.exports = {
   },
 
   async down(queryInterface: QueryInterface) {
-    await queryInterface.dropTable('Category');
+    await queryInterface.dropTable('BookCategory');
   },
 };

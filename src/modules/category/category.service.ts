@@ -2,6 +2,8 @@ import { Injectable, Inject } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { Category } from './entities/category.entity';
 import { CustomHttpException } from '../../core/exception/custom-excpetion';
+import { CategorySerializer } from './category.serializer';
+import { instanceToPlain, plainToClass } from 'class-transformer';
 
 @Injectable()
 export class CategoriesService {
@@ -10,12 +12,18 @@ export class CategoriesService {
     private categoryRepository: typeof Category,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    return this.categoryRepository.create(createCategoryDto);
+  async create(
+    createCategoryDto: CreateCategoryDto,
+  ): Promise<CategorySerializer> {
+    const category = await this.categoryRepository.create(createCategoryDto);
+    return plainToClass(
+      CategorySerializer,
+      instanceToPlain(category['dataValues'], {}),
+    );
   }
 
   async findAll(): Promise<Category[]> {
-    return this.categoryRepository.findAll();
+    return this.categoryRepository.findAll({ attributes: { exclude: ['id'] } });
   }
 
   async findOne(id: string): Promise<Category | null> {
@@ -31,7 +39,7 @@ export class CategoriesService {
   async update(
     id: string,
     createCategoryDto: CreateCategoryDto,
-  ): Promise<Category | null> {
+  ): Promise<CategorySerializer | null> {
     await this.findOne(id);
 
     const updatedData = await this.categoryRepository.update(
@@ -42,7 +50,12 @@ export class CategoriesService {
       },
     );
 
-    return updatedData?.[1]?.[0];
+    const updatedCategory = updatedData?.[1]?.[0];
+
+    return plainToClass(
+      CategorySerializer,
+      instanceToPlain(updatedCategory['dataValues'], {}),
+    );
   }
 
   async remove(id: string) {

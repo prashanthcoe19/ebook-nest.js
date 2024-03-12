@@ -12,7 +12,7 @@ module.exports = {
       _id: {
         allowNull: false,
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4
+        defaultValue: DataTypes.UUIDV4,
       },
       name: {
         type: DataTypes.STRING,
@@ -29,19 +29,19 @@ module.exports = {
       },
       phone: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
       },
       isVerified: {
         type: DataTypes.BOOLEAN,
-        allowNull: true
+        allowNull: true,
       },
       token: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
       },
       token_expires: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull: true,
       },
       gender: {
         type: DataTypes.ENUM('male', 'female', 'other'),
@@ -49,11 +49,11 @@ module.exports = {
       },
       createdAt: {
         type: DataTypes.DATE,
-        defaultValue: Sequelize.fn('now')
+        defaultValue: Sequelize.fn('now'),
       },
       updatedAt: {
         type: DataTypes.DATE,
-        defaultValue: Sequelize.fn('now')
+        defaultValue: Sequelize.fn('now'),
       },
     });
     await queryInterface.addIndex('Users', ['email']);

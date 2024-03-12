@@ -4,10 +4,15 @@ import { QueryInterface, DataTypes } from 'sequelize';
 module.exports = {
   async up(queryInterface: QueryInterface) {
     await queryInterface.createTable('Publisher', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
       _id: {
         allowNull: false,
         type: DataTypes.UUID,
-        primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
       name: {
@@ -16,15 +21,23 @@ module.exports = {
       },
       year_founded: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       website: {
         allowNull: true,
         type: DataTypes.STRING,
       },
+      email: {
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
+      slug: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
       contact: {
         allowNull: true,
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       createdAt: {
         allowNull: false,

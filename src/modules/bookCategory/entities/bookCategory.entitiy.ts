@@ -1,20 +1,21 @@
 import {
   Column,
   DataType,
-  Default,
   Model,
   Table,
-  BelongsToMany,
+  ForeignKey,
+  Default,
 } from 'sequelize-typescript';
 import { Book } from '../../books/entities/book.entity';
-import { BookCategory } from '../../bookCategory/entities/bookCategory.entitiy';
+import { Category } from '../../category/entities/category.entity';
+
 @Table({
-  tableName: 'Category',
+  tableName: 'BookCategory',
   timestamps: true,
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
 })
-export class Category extends Model<Category> {
+export class BookCategory extends Model<BookCategory> {
   @Column({
     type: DataType.INTEGER,
     autoIncrement: true,
@@ -29,24 +30,20 @@ export class Category extends Model<Category> {
     defaultValue: DataType.UUIDV4,
   })
   _id: string;
+
+  @ForeignKey(() => Book)
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  name: string;
+  book_id: number;
 
+  @ForeignKey(() => Category)
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  slug: string;
-
-  @BelongsToMany(() => Book, {
-    through: 'BookCategory',
-    foreignKey: 'category_id',
-    otherKey: 'book_id',
-  })
-  books: Book[];
+  category_id: number;
 
   @Default(DataType.NOW)
   @Column

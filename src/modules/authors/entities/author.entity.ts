@@ -1,4 +1,13 @@
-import { Column, DataType, Default, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  Default,
+  Model,
+  Table,
+  BelongsToMany,
+} from 'sequelize-typescript';
+import { Book } from '../../books/entities/book.entity';
+import { BookAuthor } from '../../bookAuthor/entities/bookAuthor.entity';
 
 @Table({
   tableName: 'Author',
@@ -27,6 +36,13 @@ export class Author extends Model<Author> {
     allowNull: false,
   })
   name: string;
+
+  @BelongsToMany(() => Book, {
+    through: 'BookAuthor',
+    foreignKey: 'author_id',
+    otherKey: 'book_id',
+  })
+  books: Book[];
 
   @Default(DataType.NOW)
   @Column

@@ -12,6 +12,7 @@ import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { Author } from './entities/author.entity';
 import { JwtAuthGuard } from '../../core/guards/jwt-auth.guard';
+import { AuthorSerializer } from './authors.serializer';
 
 @UseGuards(JwtAuthGuard)
 @Controller('authors')
@@ -19,7 +20,7 @@ export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
 
   @Post()
-  create(@Body() createAuthorDto: CreateAuthorDto): Promise<Author> {
+  create(@Body() createAuthorDto: CreateAuthorDto): Promise<AuthorSerializer> {
     return this.authorsService.create(createAuthorDto);
   }
 

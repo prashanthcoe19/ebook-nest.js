@@ -2,6 +2,8 @@ import { Injectable, Inject } from '@nestjs/common';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { Author } from './entities/author.entity';
 import { CustomHttpException } from '../../core/exception/custom-excpetion';
+import { AuthorSerializer } from './authors.serializer';
+import { instanceToPlain, plainToClass } from 'class-transformer';
 
 @Injectable()
 export class AuthorsService {
@@ -9,12 +11,16 @@ export class AuthorsService {
     @Inject('AUTHOR_REPOSITORY')
     private authorRepository: typeof Author,
   ) {}
-  create(createAuthorDto: CreateAuthorDto): Promise<Author> {
-    return this.authorRepository.create(createAuthorDto);
+  async create(createAuthorDto: CreateAuthorDto): Promise<AuthorSerializer> {
+    const author = await this.authorRepository.create(createAuthorDto);
+    return plainToClass(
+      AuthorSerializer,
+      instanceToPlain(author['dataValues'], {}),
+    );
   }
 
   findAll(): Promise<Author[]> {
-    return this.authorRepository.findAll();
+    return this.authorRepository.findAll({ attributes: { exclude: ['id'] } });
   }
 
   async findOne(id: string): Promise<Author | null> {
