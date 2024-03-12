@@ -1,6 +1,8 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 export class UserSerializer {
+  @Exclude()
+  id: string;
 
   @Expose()
   _id: string;
@@ -23,12 +25,12 @@ export class UserSerializer {
 
   // Token and token_expires are sensitive information, excluded by default
   @Exclude({
-    toClassOnly: true
+    toClassOnly: true,
   })
   token: string;
 
   @Exclude({
-    toClassOnly: true
+    toClassOnly: true,
   })
   token_expires: Date;
 

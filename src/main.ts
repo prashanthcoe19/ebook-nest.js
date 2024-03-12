@@ -12,6 +12,11 @@ async function bootstrap() {
     // handle all user input validation globally
     app.useGlobalPipes(new ValidateInputPipe());
     app.use(cookieParser());
+    app.enableCors({
+      origin: true,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      credentials: true,
+    });
     await app.listen(3000);
     console.log('Listening at port 3000');
   } catch (error) {
@@ -20,4 +25,3 @@ async function bootstrap() {
   }
 }
 bootstrap();
-

@@ -10,6 +10,8 @@ import { PostsModule } from './modules/posts/posts.module';
 import { AuthorsModule } from './modules/authors/authors.module';
 import { CategoryModule } from './modules/category/category.module';
 import { PublisherModule } from './modules/publisher/publisher.module';
+import { BooksModule } from './modules/books/books.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { PublisherModule } from './modules/publisher/publisher.module';
     AuthorsModule,
     CategoryModule,
     PublisherModule,
+    BooksModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
