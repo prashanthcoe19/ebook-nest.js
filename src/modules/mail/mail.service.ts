@@ -12,10 +12,6 @@ export class MailService {
 
   async sendMail(payload: MailJobInterface, type: string): Promise<boolean> {
     try {
-      // console.log(type, payload);
-      // const data = {
-      //   name: 'test',
-      // };
       await this.mailQueue.add(type, {
         payload,
       });

@@ -92,6 +92,12 @@ export class Book extends Model<Book> {
     allowNull: false,
     type: DataType.STRING,
   })
+  file: string;
+
+  @Column({
+    allowNull: false,
+    type: DataType.STRING,
+  })
   cover_image: string;
 
   @Column({

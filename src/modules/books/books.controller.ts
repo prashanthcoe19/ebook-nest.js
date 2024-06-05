@@ -13,7 +13,10 @@ import {
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
 import { multerUploadHelper } from '../../core/helpers/multer-upload.helper';
 import { JwtAuthGuard } from '../../core/guards/jwt-auth.guard';
 import { BookSerializer } from './books.serializer';
@@ -25,16 +28,28 @@ export class BooksController {
 
   @Post()
   @UseInterceptors(
-    FileInterceptor('cover_image', multerUploadHelper('public/books', 5000000)),
+    FileFieldsInterceptor(
+      [
+        { name: 'cover_image', maxCount: 1 },
+        { name: 'pdfFile', maxCount: 1 },
+      ],
+      multerUploadHelper('public', 1500000),
+    ),
   )
-  create(
+  async create(
     @Body() createBookDto: CreateBookDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() cover_image: Express.Multer.File,
+    @UploadedFile() pdfFile: Express.Multer.File,
   ): Promise<BookSerializer> {
-    if (file) {
-      createBookDto.cover_image = file.filename;
+    // console.log(cover_image);
+    if (cover_image) {
+      createBookDto.cover_image = cover_image.filename;
     }
-    // console.log(createBookDto);
+
+    if (pdfFile) {
+      createBookDto.file = pdfFile.filename;
+    }
+
     return this.booksService.create(createBookDto);
   }
 

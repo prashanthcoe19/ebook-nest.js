@@ -23,8 +23,8 @@ import { MailProcessor } from './mail.processor';
         transport: {
           host: process.env.MAIL_HOST,
           port: process.env.MAIL_PORT,
-          //   secure: false,
-          //   ignoreTLS: true,
+          secure: false,
+          ignoreTLS: true,
           auth: {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASS,

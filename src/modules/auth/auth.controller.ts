@@ -7,6 +7,7 @@ import {
   Req,
   Res,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -17,7 +18,8 @@ import { JwtAuthGuard } from '../../core/guards/jwt-auth.guard';
 import { UserSerializer } from '../users/user.serializer';
 import { GetUser } from '../../core/decorator/get-user.decorator';
 import { AuthDto } from './dto/auth.dto';
-
+import { ForgetPasswordDto } from './dto/forget-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -28,7 +30,7 @@ export class AuthController {
     @Res() res: Response,
     @Body() authDto: AuthDto,
   ) {
-    const cookiePayload = await this.authService.login(authDto);
+    const cookiePayload = await this.authService.login(authDto, req);
     res.setHeader('Set-Cookie', cookiePayload);
     return res.status(HttpStatus.NO_CONTENT).json({});
   }
@@ -45,16 +47,18 @@ export class AuthController {
     return this.authService.get(user);
   }
 
-  @Get('mail-test')
-  @UseGuards(JwtAuthGuard)
-  async emailTest(@GetUser() user: User) {
-    const userToSend = this.authService.get(user);
-    const subject = 'test';
-    await this.authService.sendMailToUser(userToSend, subject);
+  @Put('forget-password')
+  forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto): Promise<void> {
+    return this.authService.forgetPassword(forgetPasswordDto);
+  }
+
+  @Put('reset-pasword')
+  resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<void> {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 
   @Post('refresh')
-  async refresh(@Req() req: Request, @Res() res: Response) {
+  async refresh(@Req() req: Request, @Res() res: Response): Promise<Response> {
     try {
       const cookiePayload =
         await this.authService.generateAccessFromRefreshToken(

@@ -44,6 +44,8 @@ export class CreateBookDto {
 
   cover_image: string;
 
+  file: string;
+
   @ArrayNotEmpty()
   @ArrayUnique()
   readonly authorId: string[];
